@@ -68,6 +68,7 @@ app.post('/google', async(req, res, next) => {
                     usuario: usuarioDB,
                     token: token,
                     id: usuarioDB.id,
+					menu: obtenerMenu( usuarioDB.role ),
                     mensaje: "login POST correcto."
                 });
             }
@@ -81,7 +82,7 @@ app.post('/google', async(req, res, next) => {
             usuario.google = true;
             usuario.save((err, usuarioDB) => {
                 if (err) {
-                    res.status(400).json({
+                    return res.status(400).json({
                         ok: false,
                         mensaje: 'Error al crear usuario',
                         errors: err
@@ -94,6 +95,7 @@ app.post('/google', async(req, res, next) => {
                     usuario: usuarioDB,
                     token: token,
                     id: usuarioDB.id,
+					menu: obtenerMenu( usuarioDB.role ),
                     mensaje: "login POST correcto."
                 });
             });
@@ -149,6 +151,7 @@ app.post('/', (req, res, next) => {
             usuario: usuarioDB,
             token: token,
             id: usuarioDB.id,
+			menu: obtenerMenu( usuarioDB.role ),
             mensaje: "login POST correcto."
         });
     });
@@ -159,7 +162,36 @@ app.post('/', (req, res, next) => {
 
 
 
-
+function obtenerMenu( ROLE ) {
+	
+	var menu = [
+		{
+			titulo:"Principal",
+			icono:"mdi mdi-gauge",
+			submenu:[
+				{ titulo:"Dashoard", url:"/dashboard" },
+				{ titulo:"ProgressBar", url:"/progress" },
+				{ titulo:"Graficas", url:"/graficas1" },
+				{ titulo:"Promesas", url:"/promesas"  },
+				{ titulo:"Reactiv-js", url:"/rxjs"  },
+			]
+		},
+		{
+			titulo:"Mantenimientos",
+			icono: "mdi mdi-account-settings-variant",//"mdi mdi-folder-lock-open",
+			submenu:[
+				//{ titulo:"Usuarios", url:"/usuarios" },
+				{ titulo:"Hospitales", url:"/hospitales" },
+				{ titulo:"Médicos", url:"/medicos" }
+			]
+		}
+	];
+		
+	if ( ROLE === 'ADMIN_ROLE' ) {
+		menu[1].submenu.unshift( { titulo:"Usuarios", url:"/usuarios" } );
+	}
+	return menu;
+}
 
 
 

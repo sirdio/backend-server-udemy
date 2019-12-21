@@ -64,7 +64,7 @@ app.get('/', (req, res, next) => {
 //========================================
 // Actualizar Usuario
 //========================================
-app.put('/:id', mdAutenticacion.verificaToken, (req, res) => {
+app.put('/:id', [ mdAutenticacion.verificaToken, mdAutenticacion.verificaRolMismoUsuario ], (req, res) => {
 
     var id = req.params.id;
     var body = req.body;
@@ -88,13 +88,13 @@ app.put('/:id', mdAutenticacion.verificaToken, (req, res) => {
         usuariodb.role = body.role;
         usuariodb.save((err, usuarioGuardado) => {
             if (err) {
-                res.status(400).json({
+                return res.status(400).json({
                     ok: false,
                     mensaje: 'Error al actualizar usuario',
                     errors: err
                 });
             }
-            usuarioGuardado.password = ':-)';
+            usuarioGuardado.password = ":-)";
             res.status(200).json({
                 ok: true,
                 usuario: usuarioGuardado
@@ -138,7 +138,7 @@ app.post('/', (req, res, next) => {
 // Borrar un Usuario por el ID
 //========================================
 
-app.delete('/:id', mdAutenticacion.verificaToken, (req, res) => {
+app.delete('/:id', [ mdAutenticacion.verificaToken, mdAutenticacion.verificaRol ], (req, res) => {
 
     var id = req.params.id;
     //var body = req.body;
