@@ -3,7 +3,7 @@ var express = require('express');
 var bcrypt = require('bcryptjs');
 var jwt = require('jsonwebtoken');
 var SEED = require('../config/config').SEED;
-
+var mdAutenticacion = require('../middlewares/autenticacion');
 // Inicializar Variables
 var app = express();
 var Usuario = require('../models/usuario');
@@ -11,6 +11,18 @@ var Usuario = require('../models/usuario');
 var CLIENT_ID = require('../config/config').CLIENT_ID;
 const { OAuth2Client } = require('google-auth-library');
 const client = new OAuth2Client(CLIENT_ID);
+
+//========================================
+// Actualizar token
+//========================================
+app.post('/renovartoken', mdAutenticacion.verificaToken, (req, res)=>{
+	var token = jwt.sign({ usuario: req.usuario }, SEED, { expiresIn: 14400 }); //4 horas
+	res.status(200).json({
+		ok: true,
+            usuario: req.usuario,
+			token: token
+    });
+});
 
 
 //========================================
